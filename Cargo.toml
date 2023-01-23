@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "aggregate",
+    "aggregate_derive",
+    "aggregate_types",
+]
