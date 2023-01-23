@@ -1,0 +1,22 @@
+[package]
+name = "aggregate"
+version = "0.1.0"
+edition = "2021"
+authors = ["voidentente <voidentente@paranoici.org>"]
+repository = "https://github.com/voidentente/aggregate"
+
+[features]
+default = ["derive", "serde", "debug"]
+derive = ["dep:aggregate_derive"]
+serde = ["aggregate_types/serde"]
+debug = ["aggregate_types/debug"]
+
+[dependencies.aggregate_types]
+path = "../aggregate_types"
+
+[dependencies.aggregate_derive]
+path = "../aggregate_derive"
+optional = true
+
+[dependencies.syn]
+version = "1.0.107"
