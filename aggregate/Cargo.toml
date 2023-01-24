@@ -15,9 +15,11 @@ debug = ["aggregate_types/debug"]
 
 [dependencies.aggregate_types]
 path = "../aggregate_types"
+version = "0.1.0"
 
 [dependencies.aggregate_derive]
 path = "../aggregate_derive"
+version = "0.1.0"
 optional = true
 
 [dependencies.syn]

@@ -12,6 +12,7 @@ proc-macro = true
 
 [dependencies.aggregate_types]
 path = "../aggregate_types"
+version = "0.1.0"
 
 [dependencies.syn]
 version = "1.0.107"
