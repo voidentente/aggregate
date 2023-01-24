@@ -21,28 +21,6 @@ pub struct Struct {
     pub fields: Fields,
 }
 
-#[cfg(feature = "serde")]
-impl serde::Serialize for Struct {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        use serde::ser::SerializeStruct;
-
-        let mut state = serializer.serialize_struct("Struct", 2)?;
-        state.serialize_field(
-            "attrs",
-            &self
-                .attrs
-                .iter()
-                .map(|attr| format!("{:?}", attr))
-                .collect::<Vec<String>>(),
-        )?;
-        state.serialize_field("fields", &self.fields)?;
-        state.end()
-    }
-}
-
 /// Represents a field-level tuple of attributes and an inner structure.
 /// ```
 /// /// This is my struct.
@@ -61,26 +39,4 @@ impl serde::Serialize for Struct {
 pub struct Field {
     pub attrs: Vec<syn::Attribute>,
     pub inner: Option<Struct>,
-}
-
-#[cfg(feature = "serde")]
-impl serde::Serialize for Field {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        use serde::ser::SerializeStruct;
-
-        let mut state = serializer.serialize_struct("Field", 2)?;
-        state.serialize_field(
-            "attrs",
-            &self
-                .attrs
-                .iter()
-                .map(|attr| format!("{:?}", attr))
-                .collect::<Vec<String>>(),
-        )?;
-        state.serialize_field("inner", &self.inner)?;
-        state.end()
-    }
 }
