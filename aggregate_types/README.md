@@ -26,6 +26,4 @@ By default, all features are enabled.
 
 - Enums cannot be aggregated yet. Support is planned.
 
-- Native types like `Option<T>` cannot be aggregated yet. Support is planned.
-
 - Unions cannot be aggregated. Support might happen, but is not prioritized.
