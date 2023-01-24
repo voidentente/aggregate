@@ -4,9 +4,13 @@
 #[cfg(feature = "derive")]
 pub use aggregate_derive as derive;
 pub use aggregate_types as types;
-
 pub use syn;
-pub extern crate proc_macro;
+
+pub mod prelude {
+    #[cfg(feature = "derive")]
+    pub use crate::derive::Aggregate;
+    pub use crate::Aggregate;
+}
 
 /// This trait can be derived using the `aggregate_derive` crate,
 /// which is included by default.

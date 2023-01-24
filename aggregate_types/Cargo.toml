@@ -6,16 +6,12 @@ authors = ["voidentente <voidentente@paranoici.org>"]
 repository = "https://github.com/voidentente/aggregate"
 
 [features]
-debug = ["dep:serde", "dep:serde_json"]
-serde = ["dep:serde"]
+serde = ["debug", "dep:serde"]
+debug = ["syn/extra-traits"]
+
+[dependencies.syn]
+version = "1.0.107"
 
 [dependencies.serde]
 version = "1.0.151"
 optional = true
-
-[dependencies.serde_json]
-version = "1.0.91"
-optional = true
-
-[dependencies.syn]
-version = "1.0.107"

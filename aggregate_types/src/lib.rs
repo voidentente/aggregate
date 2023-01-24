@@ -15,7 +15,7 @@ pub type Fields = std::collections::HashMap<String, Field>;
 ///   my_field: bool,
 /// }
 /// ```
-#[derive(Default)]
+#[cfg_attr(feature = "debug", derive(Debug))]
 pub struct Struct {
     pub attrs: Vec<syn::Attribute>,
     pub fields: Fields,
@@ -35,18 +35,11 @@ impl serde::Serialize for Struct {
             &self
                 .attrs
                 .iter()
-                .map(|attr| attr.tokens.to_string())
+                .map(|attr| format!("{:?}", attr))
                 .collect::<Vec<String>>(),
         )?;
         state.serialize_field("fields", &self.fields)?;
         state.end()
-    }
-}
-
-#[cfg(feature = "debug")]
-impl core::fmt::Debug for Struct {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", serde_json::to_string_pretty(self).unwrap())
     }
 }
 
@@ -64,7 +57,7 @@ impl core::fmt::Debug for Struct {
 ///   my_inner_field: bool,
 /// }
 /// ```
-#[derive(Default)]
+#[cfg_attr(feature = "debug", derive(Debug))]
 pub struct Field {
     pub attrs: Vec<syn::Attribute>,
     pub inner: Option<Struct>,
@@ -84,17 +77,10 @@ impl serde::Serialize for Field {
             &self
                 .attrs
                 .iter()
-                .map(|attr| attr.tokens.to_string())
+                .map(|attr| format!("{:?}", attr))
                 .collect::<Vec<String>>(),
         )?;
         state.serialize_field("inner", &self.inner)?;
         state.end()
-    }
-}
-
-#[cfg(feature = "debug")]
-impl core::fmt::Debug for Field {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", serde_json::to_string_pretty(self).unwrap())
     }
 }
