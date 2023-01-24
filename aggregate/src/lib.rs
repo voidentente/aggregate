@@ -29,3 +29,9 @@ pub trait Aggregate {
     /// implement `Aggregate`.
     fn aggregate() -> types::Struct;
 }
+
+impl<T: Aggregate> Aggregate for Option<T> {
+    fn aggregate() -> types::Struct {
+        T::aggregate()
+    }
+}
