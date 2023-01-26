@@ -1,10 +1,25 @@
 //! Data structures used to represent the output of `Aggregate`.
 
-/// The "untyped" type that maps from a field name to a field.
-///
-/// Contrary to a fully untyped system, this offers more guidance,
-/// and contrary to a fully typed system, does not litter single-use types.
-pub type Fields = std::collections::HashMap<String, Field>;
+mod compat;
+
+use std::collections::HashMap;
+use syn::{Attribute, Type};
+
+/// Maps from field/variation identifier to field.
+pub type FieldMap = HashMap<String, Field>;
+
+/// Maps from field identifier to type.
+/// In order to group this into variations,
+/// the wrapper `Descendants` is used.  
+pub type DescendantMap = HashMap<String, Type>;
+
+/// Newtype around a FieldMap that implements `quote::ToTokens`.
+#[cfg_attr(feature = "debug", derive(Debug))]
+pub struct Fields(pub FieldMap);
+
+/// Newtype around a vector of attributes that implements `quote::ToTokens`.
+#[cfg_attr(feature = "debug", derive(Debug))]
+pub struct Attributes(pub Vec<Attribute>);
 
 /// Represents a structure-level tuple of attributes and fields.
 ///
@@ -16,9 +31,9 @@ pub type Fields = std::collections::HashMap<String, Field>;
 /// }
 /// ```
 #[cfg_attr(feature = "debug", derive(Debug))]
-pub struct Struct {
-    pub attrs: Vec<syn::Attribute>,
+pub struct Amalgamate {
     pub fields: Fields,
+    pub attrs: Attributes,
 }
 
 /// Represents a field-level tuple of attributes and an inner structure.
@@ -37,6 +52,14 @@ pub struct Struct {
 /// ```
 #[cfg_attr(feature = "debug", derive(Debug))]
 pub struct Field {
-    pub attrs: Vec<syn::Attribute>,
-    pub inner: Option<Struct>,
+    pub attrs: Attributes,
+    pub inner: Option<Amalgamate>,
+}
+
+/// A newtype around DescendantMap that implements `quote::ToTokens`
+/// and tracks its belonging to a collection ("variation") for use with enums.
+#[cfg_attr(feature = "debug", derive(Debug))]
+pub struct Descendants {
+    pub map: DescendantMap,
+    pub variation: Option<String>,
 }

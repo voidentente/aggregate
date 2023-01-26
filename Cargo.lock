@@ -4,7 +4,7 @@ version = 3
 
 [[package]]
 name = "aggregate"
-version = "0.1.2"
+version = "0.2.0"
 dependencies = [
  "aggregate_derive",
  "aggregate_types",
@@ -13,7 +13,7 @@ dependencies = [
 
 [[package]]
 name = "aggregate_derive"
-version = "0.1.2"
+version = "0.2.0"
 dependencies = [
  "aggregate_types",
  "quote",
@@ -22,9 +22,9 @@ dependencies = [
 
 [[package]]
 name = "aggregate_types"
-version = "0.1.2"
+version = "0.2.0"
 dependencies = [
- "serde",
+ "quote",
  "syn",
 ]
 
@@ -45,12 +45,6 @@ checksum = "8856d8364d252a14d474036ea1358d63c9e6965c8e5c1885c18f73d70bff9c7b"
 dependencies = [
  "proc-macro2",
 ]
-
-[[package]]
-name = "serde"
-version = "1.0.152"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bb7d1f0d3021d347a83e556fc4683dea2ea09d87bccdf88ff5c12545d89d5efb"
 
 [[package]]
 name = "syn"

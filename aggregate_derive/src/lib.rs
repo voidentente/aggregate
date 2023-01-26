@@ -1,8 +1,9 @@
 extern crate proc_macro;
 
+use aggregate_types::*;
+
 use proc_macro::TokenStream;
 use quote::quote;
-use quote::ToTokens;
 
 #[proc_macro_derive(Aggregate, attributes(aggregate))]
 pub fn derive_aggregate(input: TokenStream) -> TokenStream {
@@ -12,119 +13,144 @@ pub fn derive_aggregate(input: TokenStream) -> TokenStream {
 
 fn impl_aggregate(ast: &syn::DeriveInput) -> TokenStream {
     match &ast.data {
-        syn::Data::Enum(inner) => impl_aggregate_enum(&ast, inner),
-        syn::Data::Union(inner) => impl_aggregate_union(&ast, inner),
-        syn::Data::Struct(inner) => impl_aggregate_struct(&ast, inner),
+        syn::Data::Enum(data) => impl_aggregate_enum(ast, data),
+        syn::Data::Union(data) => impl_aggregate_union(ast, data),
+        syn::Data::Struct(data) => impl_aggregate_struct(ast, data),
     }
 }
 
-#[allow(unused_variables)]
+/*
+ *
+ */
+
 fn impl_aggregate_enum(ast: &syn::DeriveInput, data: &syn::DataEnum) -> TokenStream {
-    unimplemented!("enum")
-}
-
-#[allow(unused_variables)]
-fn impl_aggregate_union(ast: &syn::DeriveInput, data: &syn::DataUnion) -> TokenStream {
-    unimplemented!("union")
-}
-
-#[allow(unused_variables)]
-fn impl_aggregate_struct(ast: &syn::DeriveInput, data: &syn::DataStruct) -> TokenStream {
-    let struct_ident = &ast.ident;
-    let struct_attrs = &ast.attrs;
-
-    let mut fields_ident = Vec::new();
-    let mut fields_attrs = Vec::new();
-
-    let mut fields_to_aggregate = Vec::new();
-    let mut types_to_aggregate = Vec::new();
-
-    for field in &data.fields {
-        let ident = field
-            .ident
-            .clone()
-            .expect("Unnamed structs cannot be aggregated")
-            .to_string();
-
-        let attrs = {
-            let mut vec = Vec::new();
-
-            for attr in &field.attrs {
-                if let Ok(meta) = attr.parse_meta() {
-                    if let syn::Meta::Path(path) = meta {
-                        if path.is_ident("aggregate") {
-                            fields_to_aggregate.push(ident.clone());
-                            types_to_aggregate.push(&field.ty);
-                            continue;
-                        }
-                    }
-                }
-
-                vec.push(attr.to_token_stream());
-            }
-
-            quote! {{
-                let mut vec = Vec::<aggregate::syn::Attribute>::new();
-                #(vec.push(aggregate::syn::parse_quote!(#vec));)*
-                vec
-            }}
-        };
-
-        fields_ident.push(ident);
-        fields_attrs.push(attrs);
-    }
+    let ident = &ast.ident;
+    let attrs = Attributes(ast.attrs.to_owned());
+    let (fields, descendants) = parse_variants(&data.variants);
+    let amalgamate = Amalgamate { attrs, fields };
 
     quote! {
-
-    impl aggregate::Aggregate for #struct_ident {
-        fn aggregate() -> aggregate::types::Struct {
-            let attrs = {
-                let mut vec = Vec::new();
-                #(
-                    let attr: aggregate::syn::Attribute = aggregate::syn::parse_quote!(#struct_attrs);
-                    vec.push(attr);
-                )*
-                vec
-            };
-
-            let fields = {
-                let mut map = {
-                    let mut map = aggregate::types::Fields::new();
-
-                    let idents = {
-                        let mut vec = Vec::<String>::new();
-                        #(
-                            vec.push(#fields_ident.to_string());
-                        )*
-                        vec
-                    };
-
-                    let attrs = {
-                        let mut vec = Vec::<Vec<aggregate::syn::Attribute>>::new();
-                        #(
-                            vec.push(#fields_attrs);
-                        )*
-                        vec
-                    };
-
-                    for (ident, attrs) in idents.into_iter().zip(attrs) {
-                        map.insert(ident, aggregate::types::Field {attrs, inner: None});
-                    }
-
-                    map
-                };
-
-                #({
-                    let field = map.get_mut(#fields_to_aggregate).expect("Field has no inner to aggregate");
-                    field.inner = Some(<#types_to_aggregate as aggregate::Aggregate>::aggregate());
-                })*
-
-                map
-            };
-
-            aggregate::types::Struct { attrs, fields }
+        impl aggregate::Aggregate for #ident {
+            fn aggregate() -> aggregate::types::Amalgamate {
+                let mut amalgamate = #amalgamate;
+                #(#descendants)*
+                amalgamate
+            }
         }
     }
+    .into()
+}
 
-    }.into()
+fn impl_aggregate_struct(ast: &syn::DeriveInput, data: &syn::DataStruct) -> TokenStream {
+    let ident = &ast.ident;
+    let attrs = Attributes(ast.attrs.to_owned());
+    let (fields, descendants) = parse_fields(&data.fields);
+    let amalgamate = Amalgamate { attrs, fields };
+
+    quote! {
+        impl aggregate::Aggregate for #ident {
+            fn aggregate() -> aggregate::types::Amalgamate {
+                let mut amalgamate = #amalgamate;
+                #descendants
+                amalgamate
+            }
+        }
+    }
+    .into()
+}
+
+fn impl_aggregate_union(ast: &syn::DeriveInput, data: &syn::DataUnion) -> TokenStream {
+    let ident = &ast.ident;
+    let attrs = Attributes(ast.attrs.to_owned());
+    let (fields, descendants) = parse_fields_named(&data.fields);
+    let amalgamate = Amalgamate { attrs, fields };
+
+    quote! {
+        impl aggregate::Aggregate for #ident {
+            fn aggregate() -> aggregate::types::Amalgamate {
+                let mut amalgamate = #amalgamate;
+                #descendants
+                amalgamate
+            }
+        }
+    }
+    .into()
+}
+
+/*
+ *
+ */
+
+fn parse_variants(
+    variants: &syn::punctuated::Punctuated<syn::Variant, syn::Token![,]>,
+) -> (Fields, Vec<Descendants>) {
+    let mut variant_map = FieldMap::new();
+    let mut descendant_vec = Vec::new();
+
+    for variant in variants {
+        let ident = variant.ident.to_string();
+        let attrs = Attributes(variant.attrs.to_owned());
+
+        let inner = if variant.fields.is_empty() {
+            None
+        } else {
+            let (fields, mut descendants) = parse_fields(&variant.fields);
+            descendants.variation = Some(ident.to_owned());
+            descendant_vec.push(descendants);
+
+            Some(Amalgamate {
+                attrs: Attributes(Vec::new()),
+                fields,
+            })
+        };
+
+        variant_map.insert(ident, Field { attrs, inner });
+    }
+
+    (Fields(variant_map), descendant_vec)
+}
+
+fn parse_fields_named(fields: &syn::FieldsNamed) -> (Fields, Descendants) {
+    parse_fields(&syn::Fields::Named(fields.to_owned()))
+}
+
+fn parse_fields(fields: &syn::Fields) -> (Fields, Descendants) {
+    let mut field_map = FieldMap::new();
+    let mut descendant_map = DescendantMap::new();
+
+    for (i, field) in fields.iter().enumerate() {
+        let ident = match &field.ident {
+            Some(ident) => ident.to_string(),
+            None => i.to_string(),
+        };
+
+        let mut attrs = Vec::new();
+
+        for attr in &field.attrs {
+            if let Ok(syn::Meta::Path(path)) = attr.parse_meta() {
+                if path.is_ident("aggregate") {
+                    descendant_map.insert(ident.to_owned(), field.ty.to_owned());
+                    continue;
+                }
+            }
+
+            attrs.push(attr.to_owned());
+        }
+
+        field_map.insert(
+            ident,
+            Field {
+                attrs: Attributes(attrs),
+                inner: None,
+            },
+        );
+    }
+
+    (
+        Fields(field_map),
+        Descendants {
+            map: descendant_map,
+            variation: None,
+        },
+    )
 }

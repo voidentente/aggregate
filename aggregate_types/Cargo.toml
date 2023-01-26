@@ -1,6 +1,6 @@
 [package]
 name = "aggregate_types"
-version = "0.1.2"
+version = "0.2.0"
 edition = "2021"
 license = "MIT"
 authors = ["voidentente <voidentente@paranoici.org>"]
@@ -13,6 +13,5 @@ debug = ["syn/extra-traits"]
 [dependencies.syn]
 version = "1.0.107"
 
-[dependencies.serde]
-version = "1.0.151"
-optional = true
+[dependencies.quote]
+version = "1.0.23"
