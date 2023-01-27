@@ -10,6 +10,8 @@ By default, all features are enabled.
 
 - `debug` implements `Debug` for `aggregate_types`.
 
+- `shortcuts` implements ease-of-life traits for `aggregate_types` newtypes.
+
 ## Usage
 
 `aggregate` is extremely simple to use.

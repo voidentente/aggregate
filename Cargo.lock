@@ -4,7 +4,7 @@ version = 3
 
 [[package]]
 name = "aggregate"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "aggregate_derive",
  "aggregate_types",
@@ -13,7 +13,7 @@ dependencies = [
 
 [[package]]
 name = "aggregate_derive"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "aggregate_types",
  "quote",
@@ -22,7 +22,7 @@ dependencies = [
 
 [[package]]
 name = "aggregate_types"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "quote",
  "syn",

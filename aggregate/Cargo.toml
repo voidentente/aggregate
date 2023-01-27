@@ -1,6 +1,6 @@
 [package]
 name = "aggregate"
-version = "0.2.1"
+version = "0.2.2"
 edition = "2021"
 license = "MIT"
 authors = ["voidentente <voidentente@paranoici.org>"]
@@ -8,13 +8,14 @@ repository = "https://github.com/voidentente/aggregate"
 description = "Aggregate attributes of structs for runtime"
 
 [features]
-default = ["derive", "debug"]
+default = ["derive", "debug", "shortcuts"]
 derive = ["dep:aggregate_derive"]
 debug = ["aggregate_types/debug"]
+shortcuts = ["aggregate_types/shortcuts"]
 
 [dependencies.aggregate_types]
 path = "../aggregate_types"
-version = "0.2.0"
+version = "0.2.2"
 
 [dependencies.aggregate_derive]
 path = "../aggregate_derive"
