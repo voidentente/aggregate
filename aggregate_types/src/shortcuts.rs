@@ -24,6 +24,12 @@ impl<'a> IntoIterator for &'a Fields {
     }
 }
 
+impl Fields {
+    pub fn get(&self, k: &str) -> Option<&Field> {
+        self.0.get(k)
+    }
+}
+
 impl IntoIterator for Attributes {
     type Item = Attribute;
     type IntoIter = vec::IntoIter<Attribute>;
