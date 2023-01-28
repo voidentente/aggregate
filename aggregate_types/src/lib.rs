@@ -1,8 +1,8 @@
 //! Data structures used to represent the output of `Aggregate`.
 
 mod compat;
-#[cfg(feature = "shortcuts")]
-mod shortcuts;
+#[cfg(feature = "helper")]
+mod helper;
 
 use std::collections::HashMap;
 use syn::{Attribute, Type};

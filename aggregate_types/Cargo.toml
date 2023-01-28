@@ -1,6 +1,6 @@
 [package]
 name = "aggregate_types"
-version = "0.2.3"
+version = "0.2.4"
 edition = "2021"
 license = "MIT"
 authors = ["voidentente <voidentente@paranoici.org>"]
@@ -9,7 +9,7 @@ description = "Aggregate attributes of structs for runtime"
 
 [features]
 debug = ["syn/extra-traits"]
-shortcuts = []
+helper = []
 
 [dependencies.syn]
 version = "1.0.107"
