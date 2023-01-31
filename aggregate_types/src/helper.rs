@@ -52,7 +52,6 @@ impl<'a> IntoIterator for &'a Attributes {
     type IntoIter = slice::Iter<'a, Attribute>;
 
     #[inline]
-    #[must_use]
     fn into_iter(self) -> Self::IntoIter {
         self.0.iter()
     }

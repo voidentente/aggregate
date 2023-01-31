@@ -15,11 +15,11 @@ pub type FieldMap = HashMap<String, Field>;
 /// the wrapper `Descendants` is used.  
 pub type DescendantMap = HashMap<String, Type>;
 
-/// Newtype around a FieldMap that implements `quote::ToTokens`.
+/// New type around a FieldMap that implements `quote::ToTokens`.
 #[cfg_attr(feature = "debug", derive(Debug))]
 pub struct Fields(pub FieldMap);
 
-/// Newtype around a vector of attributes that implements `quote::ToTokens`.
+/// New type around a vector of attributes that implements `quote::ToTokens`.
 #[cfg_attr(feature = "debug", derive(Debug))]
 pub struct Attributes(pub Vec<Attribute>);
 

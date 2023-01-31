@@ -24,57 +24,63 @@ fn impl_aggregate(ast: &syn::DeriveInput) -> TokenStream {
  */
 
 fn impl_aggregate_enum(ast: &syn::DeriveInput, data: &syn::DataEnum) -> TokenStream {
+    let (impl_generics, ty_generics, _) = ast.generics.split_for_impl();
     let ident = &ast.ident;
     let attrs = Attributes(ast.attrs.to_owned());
     let (fields, descendants) = parse_variants(&data.variants);
     let amalgamate = Amalgamate { attrs, fields };
 
-    quote! {
-        impl aggregate::Aggregate for #ident {
+    let expanded = quote! {
+        impl #impl_generics aggregate::Aggregate for #ident #ty_generics {
             fn aggregate() -> aggregate::types::Amalgamate {
                 let mut amalgamate = #amalgamate;
                 #(#descendants)*
                 amalgamate
             }
         }
-    }
-    .into()
+    };
+
+    expanded.into()
 }
 
 fn impl_aggregate_struct(ast: &syn::DeriveInput, data: &syn::DataStruct) -> TokenStream {
+    let (impl_generics, ty_generics, _) = ast.generics.split_for_impl();
     let ident = &ast.ident;
     let attrs = Attributes(ast.attrs.to_owned());
     let (fields, descendants) = parse_fields(&data.fields);
     let amalgamate = Amalgamate { attrs, fields };
 
-    quote! {
-        impl aggregate::Aggregate for #ident {
+    let expanded = quote! {
+        impl #impl_generics aggregate::Aggregate for #ident #ty_generics {
             fn aggregate() -> aggregate::types::Amalgamate {
                 let mut amalgamate = #amalgamate;
                 #descendants
                 amalgamate
             }
         }
-    }
-    .into()
+    };
+
+    expanded.into()
 }
 
 fn impl_aggregate_union(ast: &syn::DeriveInput, data: &syn::DataUnion) -> TokenStream {
+    let (impl_generics, ty_generics, _) = ast.generics.split_for_impl();
     let ident = &ast.ident;
     let attrs = Attributes(ast.attrs.to_owned());
     let (fields, descendants) = parse_fields_named(&data.fields);
     let amalgamate = Amalgamate { attrs, fields };
 
-    quote! {
-        impl aggregate::Aggregate for #ident {
+    let expanded = quote! {
+        impl #impl_generics aggregate::Aggregate for #ident #ty_generics {
             fn aggregate() -> aggregate::types::Amalgamate {
                 let mut amalgamate = #amalgamate;
                 #descendants
                 amalgamate
             }
         }
-    }
-    .into()
+    };
+
+    expanded.into()
 }
 
 /*
