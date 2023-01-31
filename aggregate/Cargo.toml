@@ -1,6 +1,6 @@
 [package]
 name = "aggregate"
-version = "0.2.6"
+version = "0.2.7"
 edition = "2021"
 license = "MIT"
 authors = ["voidentente <voidentente@paranoici.org>"]
@@ -17,11 +17,11 @@ syn = []
 
 [dependencies.aggregate_types]
 path = "../aggregate_types"
-version = "0.2.6"
+version = "0.2.7"
 
 [dependencies.aggregate_derive]
 path = "../aggregate_derive"
-version = "0.2.6"
+version = "0.2.7"
 optional = true
 
 [dependencies.syn]

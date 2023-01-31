@@ -1,6 +1,6 @@
 [package]
 name = "aggregate_derive"
-version = "0.2.6"
+version = "0.2.7"
 edition = "2021"
 license = "MIT"
 authors = ["voidentente <voidentente@paranoici.org>"]
@@ -12,7 +12,7 @@ proc-macro = true
 
 [dependencies.aggregate_types]
 path = "../aggregate_types"
-version = "0.2.6"
+version = "0.2.7"
 
 [dependencies.syn]
 version = "1.0.107"
