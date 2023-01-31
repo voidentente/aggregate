@@ -53,7 +53,7 @@ impl ToTokens for Attributes {
         let attrs = &self.0;
 
         tokens.extend(quote! {
-            aggretate::types::Attributes(Vec::from([
+            aggregate::types::Attributes(Vec::from([
                 #(aggregate::syn::parse_quote!(#attrs)),*
             ]))
         });
