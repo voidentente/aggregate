@@ -31,7 +31,7 @@ impl ToTokens for Descendants {
                 tokens.extend(quote! {{
                     #(
                         let variation = amalgamate.fields.0.get_mut(#variation).unwrap();
-                        let field = variation.inner.as_ref().unwrap().fields.0.get_mut(#keys).unwrap();
+                        let field = variation.inner.as_mut().unwrap().fields.0.get_mut(#keys).unwrap();
                         field.inner = Some(<#values as aggregate::Aggregate>::aggregate());
                     )*
                 }});

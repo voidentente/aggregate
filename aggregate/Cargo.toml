@@ -8,10 +8,12 @@ repository = "https://github.com/voidentente/aggregate"
 description = "Aggregate attributes of structs for runtime"
 
 [features]
-default = ["derive", "debug", "helper"]
-derive = ["dep:aggregate_derive"]
+default = ["derive", "debug", "helper", "default_impl"]
+derive = ["dep:aggregate_derive", "syn"]
 debug = ["aggregate_types/debug"]
 helper = ["aggregate_types/helper"]
+default_impl = []
+syn = []
 
 [dependencies.aggregate_types]
 path = "../aggregate_types"
