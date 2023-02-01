@@ -1,18 +1,21 @@
 [package]
 name = "aggregate_types"
-version = "0.2.7"
+version = "0.3.0"
 edition = "2021"
 license = "MIT"
 authors = ["voidentente <voidentente@paranoici.org>"]
 repository = "https://github.com/voidentente/aggregate"
 description = "Aggregate attributes of structs for runtime"
 
-[features]
-debug = ["syn/extra-traits"]
-helper = []
-
 [dependencies.syn]
 version = "1.0.107"
 
 [dependencies.quote]
 version = "1.0.23"
+
+[dependencies.once_cell]
+version = "1.17.0"
+
+[dependencies.phf]
+version = "0.11.1"
+features = ["macros"]

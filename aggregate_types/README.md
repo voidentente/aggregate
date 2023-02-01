@@ -1,6 +1,25 @@
 # Aggregate
 
-Aggregate attributes of structs to be used at runtime using a simple macro.
+Access attributes of structs, enums, unions, and their fields using a
+simple Derive macro and without allocating.
+
+## About
+
+Aggregate utilizes the power of macros, perfect hash functions,
+and lazy loading for extreme performance.
+
+`Amalgamate`s are singletons representing a struct/enum/union's
+attribute structure that lie in shared static memory and can be accessed via
+a type function call.
+
+Aggregate works recursively by calling `aggregate()` on nested structures
+without limiting the types that can be used, and without runtime overhead
+by simply linking to nested `Amalgamate`s by reference.
+
+Attributes are kept intact, which means that on access, they are
+represented as `syn::Attribute`s. However, parsing *all* attributes from tokens
+can be costly and wasteful, which is why they are lazy-loaded and only parsed
+when accessed.
 
 ## Features
 
@@ -8,9 +27,7 @@ By default, all features are enabled.
 
 - `derive` re-exports `aggregate_derive`.
 
-- `debug` implements `Debug` for `aggregate_types`.
-
-- `helper` implements ease-of-life traits for `aggregate_types` newtypes.
+- `impl` adds default implementations for common types like `Option<T>`.
 
 ## Usage
 
@@ -40,10 +57,12 @@ Aggregate supports nesting:
 struct ConfigFile {
   /// This attribute is paired with the field
   ///
-  /// This field has an `inner`, which will include the aggregation of `Config`
+  /// This field has an `inner`, which will 
+  /// include the aggregation of `Config`
   ///
-  /// In order for `aggregate_derive` to notice nested structures, you must
-  /// mark the field with the `#[aggregate]` attribute:
+  /// In order for `aggregate_derive` to notice 
+  /// nested structures, you must mark the field 
+  /// with the `#[aggregate]` attribute:
   #[aggregate]
   my_config: Config,
 }
@@ -62,8 +81,9 @@ enum MyEnum {
     field_1: Inner,
   },
 
-  /// Unnamed structs like this are also supported;
-  /// `aggregate` simply enumerates the fields for representation
+  /// Unnamed structs like this are also 
+  /// supported; `aggregate` simply enumerates 
+  /// the fields for representation
   VariantTwo(#[aggregate] Inner),
 }
 ```

@@ -11,7 +11,7 @@ use crate::Aggregate;
 macro_rules! transparent_impl {
     ($ty:ty) => {
         impl<T: Aggregate> Aggregate for $ty {
-            fn aggregate() -> Amalgamate {
+            fn aggregate() -> &'static Amalgamate {
                 T::aggregate()
             }
         }
