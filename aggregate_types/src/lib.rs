@@ -1,3 +1,6 @@
+#[cfg(feature = "fmt")]
+mod fmt;
+
 pub use phf;
 pub use quote;
 pub use syn;

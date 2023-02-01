@@ -132,7 +132,8 @@ fn variant_map(
                         attrs: phf_ordered_map! {},
                         fields: #fields,
                     };
-                    static mut INNER: LazyAmalgamate = LazyAmalgamate::new(|| unsafe { &AMALGAMATE });
+                    static mut INNER: LazyAmalgamate =
+                        LazyAmalgamate::new(|| unsafe { &AMALGAMATE });
                     unsafe { &INNER }
                 }
             };
@@ -176,7 +177,8 @@ fn field_map(fields: &syn::Fields) -> quote::__private::TokenStream {
             let ty = &field.ty;
             let inner = quote! {
                 {
-                    static mut INNER: LazyAmalgamate = LazyAmalgamate::new(|| <#ty as aggregate::Aggregate>::aggregate());
+                    static mut INNER: LazyAmalgamate =
+                        LazyAmalgamate::new(|| <#ty as aggregate::Aggregate>::aggregate());
                     unsafe { &INNER }
                 }
             };

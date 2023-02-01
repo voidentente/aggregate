@@ -29,6 +29,8 @@ By default, all features are enabled.
 
 - `impl` adds default implementations for common types like `Option<T>`.
 
+- `fmt` implements `fmt::Debug` for `Amalgamate`.
+
 ## Usage
 
 `aggregate` is extremely simple to use.
