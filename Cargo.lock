@@ -4,7 +4,7 @@ version = 3
 
 [[package]]
 name = "aggregate"
-version = "0.3.0"
+version = "0.3.2"
 dependencies = [
  "aggregate_derive",
  "aggregate_types",
@@ -12,14 +12,14 @@ dependencies = [
 
 [[package]]
 name = "aggregate_derive"
-version = "0.3.0"
+version = "0.3.2"
 dependencies = [
  "aggregate_types",
 ]
 
 [[package]]
 name = "aggregate_types"
-version = "0.3.0"
+version = "0.3.2"
 dependencies = [
  "once_cell",
  "phf",
