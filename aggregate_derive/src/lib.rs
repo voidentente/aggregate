@@ -31,9 +31,9 @@ fn impl_aggregate_enum(ast: &syn::DeriveInput, data: &syn::DataEnum) -> TokenStr
     let variants = variant_map(&data.variants);
 
     let expanded = quote! {
-        impl #impl_generics aggregate::Aggregate for #ident #ty_generics {
-            fn aggregate() -> &'static aggregate::types::Amalgamate {
-                use aggregate::types::*;
+        impl #impl_generics ::aggregate::Aggregate for #ident #ty_generics {
+            fn aggregate() -> &'static ::aggregate::types::Amalgamate {
+                use ::aggregate::types::*;
                 use syn::parse_quote;
                 use phf::phf_ordered_map;
 
@@ -54,12 +54,12 @@ fn impl_aggregate_union(ast: &syn::DeriveInput, data: &syn::DataUnion) -> TokenS
     let (impl_generics, ty_generics, _) = ast.generics.split_for_impl();
     let ident = &ast.ident;
     let (_, attrs) = attr_map(&ast.attrs);
-    let fields = named_field_map(&data.fields);
+    let fields = field_map(&syn::Fields::Named(data.fields.clone()));
 
     let expanded = quote! {
-        impl #impl_generics aggregate::Aggregate for #ident #ty_generics {
-            fn aggregate() -> &'static aggregate::types::Amalgamate {
-                use aggregate::types::*;
+        impl #impl_generics ::aggregate::Aggregate for #ident #ty_generics {
+            fn aggregate() -> &'static ::aggregate::types::Amalgamate {
+                use ::aggregate::types::*;
                 use syn::parse_quote;
                 use phf::phf_ordered_map;
 
@@ -83,9 +83,9 @@ fn impl_aggregate_struct(ast: &syn::DeriveInput, data: &syn::DataStruct) -> Toke
     let fields = field_map(&data.fields);
 
     let expanded = quote! {
-        impl #impl_generics aggregate::Aggregate for #ident #ty_generics {
-            fn aggregate() -> &'static aggregate::types::Amalgamate {
-                use aggregate::types::*;
+        impl #impl_generics ::aggregate::Aggregate for #ident #ty_generics {
+            fn aggregate() -> &'static ::aggregate::types::Amalgamate {
+                use ::aggregate::types::*;
                 use syn::parse_quote;
                 use phf::phf_ordered_map;
 
@@ -156,10 +156,6 @@ fn variant_map(
             #(#streams),*
         }
     }
-}
-
-fn named_field_map(fields: &syn::FieldsNamed) -> quote::__private::TokenStream {
-    field_map(&syn::Fields::Named(fields.clone()))
 }
 
 fn field_map(fields: &syn::Fields) -> quote::__private::TokenStream {
